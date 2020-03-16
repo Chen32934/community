@@ -11,7 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -39,8 +41,8 @@ public class AuthorizeController {
     public String callBack(
             @RequestParam(name = "code") String code,
             @RequestParam(name = "state") String state,
-            HttpServletRequest req
-    ) throws IOException {
+          HttpServletResponse rep
+            ) throws IOException {
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setCode(code);
         accessTokenDTO.setRedirect_uri(Redirect_uri);
@@ -52,15 +54,16 @@ public class AuthorizeController {
         if (githuUser!=null){
             User user=new User();
             user.setName(githuUser.getName());
-            user.setToken(UUID.randomUUID().toString());
+            user.setToken(token);
             user.setAccountId(String.valueOf(githuUser.getId()));
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
             iUserMapper.InsertUser(user);
-        req.getSession().setAttribute("userSession", githuUser);
-            return "redirect:index";
+            //登陆OK  写入session 和cooike
+            rep.addCookie(new Cookie("token",token));
+            return "redirect:/";
         }else {
-            return "redirect:index";
+            return "redirect:/";
         }
 //githubProider.getAccessToken(new accessTokenDTO() );
     }
