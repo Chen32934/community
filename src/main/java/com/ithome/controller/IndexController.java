@@ -38,4 +38,12 @@ public class IndexController {
     }
 
 
+    @RequestMapping("/test")
+    public String test(Model model) {
+        String name="david";
+        model.addAttribute("user",name);
+        return "test";
+    }
+
+
 }
