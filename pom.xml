@@ -64,18 +64,33 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.62</version>
         </dependency>
-<!--        h2数据库-->
+        <!--        h2数据库-->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.4.199</version>
         </dependency>
-<!--Spring boot 整合Mybatis-->
+        <!--Spring boot 整合Mybatis-->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>2.1.1</version>
         </dependency>
+        <!--lomback 注解-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.12</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- mybatis-generator-core 反向生成java代码-->
+        <dependency>
+            <groupId>org.mybatis.generator</groupId>
+            <artifactId>mybatis-generator-core</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -94,6 +109,19 @@
                     <user>root</user>
                     <password>qq908820193</password>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.h2database</groupId>
+                        <artifactId>h2</artifactId>
+                        <version>1.4.199</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <!--    mybatis generator是很好用的mybatis自动代码生成工具，自动生成实体，mapper接口，xml配置文件        -->
+            <plugin>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-maven-plugin</artifactId>
+                <version>1.4.0</version>
                 <dependencies>
                     <dependency>
                         <groupId>com.h2database</groupId>

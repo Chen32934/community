@@ -11,6 +11,7 @@
 ##工具
 [Git](https://git-scm.com/dowload)
 [Visual Paradigm](https://www.visual-paradigm.com)
+[lombok](https://projectlombok.org/)
 
 ##sql
 CREATE  TABLE USER(
@@ -20,22 +21,25 @@ CREATE  TABLE USER(
                       TOKEN  VARCHAR(40),
                       GMT_CREATE  BIGINT,
                       GMT_MODIFIED  BIGINT,
-                      BIO  VARCHAR(500)
+                      BIO  VARCHAR(500),
+                      AVATAR_URL VARCHAR(500)
 )
-create table question
+
+create table QUESTION
 (
-    id int not null,
-    title varchar(50),
-    description text,
-    gmt_create BIGINT,
-    gmt_modified BIGINT,
-    creator int,
-    comment_count int default 0,
-    view_count int default 0,
-    like_count int default 0,
-    tag int,
-    constraint question_pk
-        primary key (id)
+    ID            INTEGER not null,
+    TITLE         VARCHAR(50),
+    DESCRIPTION   CLOB,
+    GMT_CREATE    BIGINT,
+    GMT_MODIFIED  BIGINT,
+    CREATOR       INTEGER,
+    COMMENT_COUNT INTEGER default 0,
+    VIEW_COUNT    INTEGER default 0,
+    LIKE_COUNT    INTEGER default 0,
+    TAG           VARCHAR(50),
+    constraint QUESTION_PK
+        primary key (ID)
 );
+
 
   

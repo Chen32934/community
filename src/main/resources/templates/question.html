@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>daweiCommunity</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/css/community.css">
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/npm.js"></script>
+    <script src="/js/include.js"></script>
+
+
+<body>
+
+
+<div th:insert="~{navigation.html :: nav}"></div>
+
+
+<div class="container-fluid main">
+    <div class="row">
+        <div class="col-lg-9  col-md-12  col-sm-12  col-xs-12">
+            <h4><span th:text="${question.title}"></span></h4>
+
+
+            <em class="text-color-999">
+                <a class="aw-question-tags" href=""
+                   th:text="${question.tag}"> </a>
+                | 作者 <a class="aw-user-name" href=" " data-id="" th:text="${question.user.getName()}"> </a>
+                | 发布于<span th:text="${question.gmtCreate}"></span>天前
+                | 阅读数：<span th:text="${question.viewCount}"></span>
+            </em>
+            <hr>
+
+            <div class="col-lg-12  col-md-12  col-sm-12  col-xs-12" th:text="${question.description}"></div>
+            <hr class="col-lg-12  col-md-12  col-sm-12  col-xs-12">
+            <a th:if="${session.userSession!=null && session.userSession.accountId==question.creator }" class="community-menu" th:href="@{'/publish/'+${question.id}}"><span class="glyphicon glyphicon-pencil">编辑</span></a>
+
+        </div>
+
+        <div class="col-lg-3  col-md-12  col-sm-12  col-xs-12">
+
+            <div class="col-lg-12  col-md-12  col-sm-12  col-xs-12">
+                <div class="aw-mod">
+                    <div class="mod-head">
+                        <h3 id="">发起人</h3>
+                    </div>
+
+                    <div class="mod-body">
+                        <dl>
+                            <dt class="pull-left ">
+                                <a href=""><img class="media-object img-rounded" alt="dawei2233" th:src="${question.user.avatarurl}"></a>
+                            </dt>
+                            <dd class="pull-left">
+                                <a class="aw-user-name" href="" data-id="">dawei2233</a>
+                                <p></p>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12  col-md-12  col-sm-12  col-xs-12">
+                <div class="aw-mod">
+                    <div class="mod-head">
+                        <h3 id="796d1668-be3c-63ff-c16b-aadf7e4adc39">相关问题</h3>
+                    </div>
+                    <div class="mod-body font-size-12">
+                        <ul>
+                            <li><a href="">实打实的广东佛山感到附属国豆腐干大师傅？</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+    </div>
+</div>
+
+
+
+
+</body>
+</html>
