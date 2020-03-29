@@ -6,9 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class pagInationDTO {
+public class pagInationDTO<T> {
 
-    private List<QuestionDTO> question;
+    private List<T> data;
+//    private List<QuestionDTO> question;
     private boolean showHomePage;
     private boolean showLastPage;
     private boolean showNext;
@@ -16,15 +17,10 @@ public class pagInationDTO {
     private Integer pageNum;  //当前页
     private List<Integer> pages=new ArrayList<>();
     private Integer totalPage;
-    public void setPagInation(Integer totalCount, Integer pageNum, Integer pageSize) {
+
+    public void setPagInation(Integer totalPage, Integer pageNum) {
         this.pageNum=pageNum;
-
-        if (totalCount %pageSize == 0) {
-            totalPage = totalCount / pageSize;
-        } else{
-            totalPage = totalCount / pageSize + 1;
-        }
-
+        this.totalPage=totalPage;
         pages.add(pageNum);
         for (int i = 1; i <= 3; i++) {
             if (pageNum-i>0){
@@ -35,7 +31,6 @@ public class pagInationDTO {
             }
         }
 
-
 //是否展示上一页
     if (pageNum==1){
         showLastPage=false;
@@ -43,7 +38,6 @@ public class pagInationDTO {
         showLastPage=true;
         showHomePage=true;
     }
-
 //是否展示下一页
         if (pageNum==totalPage){
             showNext=false;
@@ -51,8 +45,6 @@ public class pagInationDTO {
             showNext=true;
             showEndPage=true;
         }
-
-
 }
 
 

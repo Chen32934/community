@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class IndexController {
@@ -18,22 +17,20 @@ public class IndexController {
     private QuestionService questionService;
 
     @RequestMapping("/")
-    public String Index(HttpServletRequest request,Model model,
-                         @RequestParam(name = "pageNum",required =true,defaultValue = "1") Integer pageNum,
-                        @RequestParam(name = "pageSize",required = true, defaultValue = "5") Integer pageSize
+    public String Index(Model model,
+                        @RequestParam(name = "pageNum", defaultValue = "1") Integer pageNum,
+                        @RequestParam(name = "pageSize", defaultValue = "5") Integer pageSize,
+                        @RequestParam(name = "search", required = false) String search
     ) {
-
-        pagInationDTO pagInation = questionService.list(pageNum,pageSize);
-        model.addAttribute("questionlist",pagInation);
+        pagInationDTO pagInation = questionService.list(search, pageNum, pageSize);
+        model.addAttribute("questionlist", pagInation);
+        model.addAttribute("search",search);
         return "index";
     }
 
-
     @RequestMapping("/test")
     public String test(Model model) {
-        String name="david";
-        model.addAttribute("user",name);
-        return "test";
+        return "makerdown";
     }
 
 

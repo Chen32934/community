@@ -6,10 +6,14 @@
 
 <generatorConfiguration>
 
-    <!--    <classPathEntry location="/Program Files/IBM/SQLLIB/java/db2java.zip" />-->
+
     <context id="DB2Tables" targetRuntime="MyBatis3">
+
+        <!--  分页插件-->
+        <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"></plugin>
+
         <jdbcConnection driverClass="org.h2.Driver"
-                        connectionURL="jdbc:h2:file:~/community"
+                        connectionURL="jdbc:h2:D:/IDEAWJ/H2/community"
                         userId="root"
                         password="qq908820193">
         </jdbcConnection>
@@ -41,13 +45,15 @@
 -->
 
         <!-- targetPackage：mapper接口dao生成的位置 -->
-        <javaClientGenerator type="XMLMAPPER" targetPackage="test.dao" targetProject="\MBGTestProject\src">
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.ithome.mapper" targetProject="src/main/java">
             <!-- enableSubPackages:是否让schema作为包的后缀 -->
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table schema="DB2ADMIN" tableName="user" domainObjectName="User">
-        </table>
+        <table tableName="USER" domainObjectName="User"></table>
+        <table tableName="QUESTION" domainObjectName="Question"></table>
+        <table tableName="COMMENT" domainObjectName="Comment"></table>
+        <table tableName="NOTIFY" domainObjectName="Notify"></table>
 
     </context>
 </generatorConfiguration>

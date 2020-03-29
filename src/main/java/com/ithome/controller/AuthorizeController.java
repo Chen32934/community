@@ -1,9 +1,11 @@
 package com.ithome.controller;
 
 import com.ithome.domain.User;
+import com.ithome.domain.UserExample;
 import com.ithome.dto.AccessTokenDTO;
 import com.ithome.dto.GithuUser;
 import com.ithome.mapper.IUserMapper;
+import com.ithome.mapper.UserMapper;
 import com.ithome.provider.GithubProider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +17,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 
 @Controller
@@ -25,6 +28,9 @@ public class AuthorizeController {
 
     @Autowired
     private IUserMapper iUserMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Value("${github.client.id}")
     private String Client_id;
@@ -58,14 +64,25 @@ public class AuthorizeController {
             user.setAccountId(Integer.parseInt(String.valueOf(githuUser.getId())));
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
-            user.setAvatarurl(githuUser.getAvatar_url());
+            user.setAvatarUrl(githuUser.getAvatar_url());
+            user.setBio(githuUser.getBio());
             //1.查询数据库是否有此用户的登陆数据 有更新；无插入
-            User DBuser=iUserMapper.findById(user.getAccountId());
-            if (DBuser!=null){
-                System.out.println("需要更新");
-                iUserMapper.UpdateUser(user);
+            //改动
+            UserExample userExample = new UserExample();
+            userExample.createCriteria().andAccountIdEqualTo(String.valueOf(user.getAccountId()));
+            List<User> users = userMapper.selectByExample(userExample);
+//            User DBuser=iUserMapper.findById(user.getAccountId());
+            if (users.size()!=0){
+                User DBuser=new User();
+                DBuser.setName(githuUser.getName());
+                DBuser.setToken(token);
+                DBuser.setGmtModified(user.getGmtCreate());
+                DBuser.setAvatarUrl(githuUser.getAvatar_url());
+                UserExample userExample1 = new UserExample();
+                userExample1.createCriteria().andAccountIdEqualTo(String.valueOf(user.getAccountId()));
+                userMapper.updateByExampleSelective(DBuser,userExample1);
             }else {
-                iUserMapper.InsertUser(user);
+                userMapper.insert(user);
             }
             //登陆OK  写入session 和cooike
             rep.addCookie(new Cookie("token",token));
@@ -79,10 +96,12 @@ public class AuthorizeController {
 
     @GetMapping("/logout")
    public String logout(HttpServletRequest request,HttpServletResponse response){
+
          request.getSession().removeAttribute("userSeesion");
         Cookie cookie = new Cookie("token",null);
-        cookie.setMaxAge(0);
+        cookie.setMaxAge(-1);
         response.addCookie(cookie);
+        request.getSession().invalidate();
         return "redirect:/";
 
     }

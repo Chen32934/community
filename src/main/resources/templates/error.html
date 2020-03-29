@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>daweiCommunity</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/css/community.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/npm.js"></script>
+    <script src="/js/include.js"></script>
+<body class="aw-404">
+<div class="aw-404-wrap container">
+    <div class="row">
+        <img src="/img/error.png" height="341" width="640" alt="error"/>
+        <p>
+        <p th:text="${message}"></p>
+        <a href="javascript:history.go(-1)">返回</a>或搜索相关内容</p>
+        <div class="aw-search-box  hidden-sm">
+        </div>
+    </div>
+</div>
+<div class="aw-footer-wrap">
+</div>
+
+
+</body>
+</html>
+

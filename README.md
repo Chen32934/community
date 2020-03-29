@@ -27,7 +27,7 @@ CREATE  TABLE USER(
 
 create table QUESTION
 (
-    ID            INTEGER not null,
+    ID            INTEGER auto_increment not null,
     TITLE         VARCHAR(50),
     DESCRIPTION   CLOB,
     GMT_CREATE    BIGINT,
@@ -40,6 +40,46 @@ create table QUESTION
     constraint QUESTION_PK
         primary key (ID)
 );
+
+create table COMMENT
+(
+    ID           BIGINT auto_increment,
+    PARENT_ID    BIGINT  not null,
+    TYPE         INTEGER,
+    COMMENTATOR  INTEGER not null,
+    GMT_CREATE   BIGINT,
+    GMT_MODIFIED BIGINT,
+        COMMENT_COUNT INTEGER,
+    LIKE_COUNT   BIGINT default 0,
+    CONTENT      VARCHAR(500),
+    constraint COMMENT_PK
+        primary key (ID)
+);
+create table notify
+(
+	id int auto_increment,
+	" informant" int,
+	receiver int,
+	outerId int,
+	type int,
+	gmt_create bigint,
+	status int default 0,
+	constraint notify_pk
+		primary key (id)
+);
+alter table NOTIFY
+    add NOTIFIRE_NAME varchar(100);
+
+alter table NOTIFY
+    add OUTER_TITLE VARCHAR(200);
+
+comment on table notify is '通知';
+
+comment on column notify.outerId is '类型的Id';
+
+
+
+
 
 
   

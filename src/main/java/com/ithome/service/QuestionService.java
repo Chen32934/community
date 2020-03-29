@@ -1,17 +1,27 @@
 package com.ithome.service;
 
 import com.ithome.domain.Question;
+import com.ithome.domain.QuestionExample;
 import com.ithome.domain.User;
+import com.ithome.domain.UserExample;
 import com.ithome.dto.QuestionDTO;
+import com.ithome.dto.QuestionQueryDTO;
 import com.ithome.dto.pagInationDTO;
-import com.ithome.mapper.IQuestionMapper;
-import com.ithome.mapper.IUserMapper;
+import com.ithome.exception.CustomizeErrorCode;
+import com.ithome.exception.CustomizeException;
+import com.ithome.mapper.QuestionExtMapper;
+import com.ithome.mapper.QuestionMapper;
+import com.ithome.mapper.UserMapper;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 组装的作用
@@ -20,14 +30,30 @@ import java.util.List;
 @Service
 public class QuestionService {
 
-    @Autowired
-    private IUserMapper iUserMapper;
+
 
     @Autowired
-    private IQuestionMapper iQuestionMapper;
+    private QuestionMapper questionMapper;
 
-    public pagInationDTO list(Integer pageNum, Integer pageSize) {
-        Integer totalCount = iQuestionMapper.count();
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private QuestionExtMapper questionExtMapper;
+
+
+
+    public pagInationDTO list(String search,Integer pageNum, Integer pageSize) {
+
+        if (StringUtils.isNotBlank(search)){
+            String [] tags=StringUtils.split(search," ");
+            search= Arrays.stream(tags).collect(Collectors.joining("|"));
+//            search = StringUtils.replace(search, " ", "|");
+//            System.out.println(search);
+        }
+        QuestionQueryDTO questionQueryDTO = new QuestionQueryDTO();
+        questionQueryDTO.setSearch(search);
+        Integer totalCount =questionExtMapper.searchCount(questionQueryDTO);
         Integer totalPage;
         if (totalCount % pageSize == 0) {
             totalPage = totalCount / pageSize;
@@ -41,23 +67,32 @@ public class QuestionService {
 
         }
         Integer offSet = pageSize * (pageNum - 1);
-        List<Question> questions = iQuestionMapper.pageList(offSet, pageSize);
+//        QuestionExample questionExample = new QuestionExample();
+//        questionExample.setOrderByClause("GMT_CREATE desc");
+//        List<Question> questions = questionMapper.selectByExampleWithRowbounds(questionExample,new RowBounds(offSet,pageSize));
+        questionQueryDTO.setPageNum(offSet);
+        questionQueryDTO.setPageSize(pageSize);
+        List<Question> questions = questionExtMapper.selectBySearch(questionQueryDTO);
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         pagInationDTO pagInationDTO = new pagInationDTO();
         for (Question question : questions) {
-            User user = iUserMapper.findById(question.getCreator());
+            UserExample userExample=new UserExample();
+                userExample.createCriteria().andAccountIdEqualTo(String.valueOf(question.getCreator()));
+            List<User> users = userMapper.selectByExample(userExample);
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question, questionDTO);
-            questionDTO.setUser(user);
+            questionDTO.setUser(users.get(0));
             questionDTOList.add(questionDTO);
         }
-        pagInationDTO.setQuestion(questionDTOList);
-        pagInationDTO.setPagInation(totalCount, pageNum, pageSize);
+        pagInationDTO.setData(questionDTOList);
+        pagInationDTO.setPagInation(totalPage, pageNum);
         return pagInationDTO;
     }
 
     public pagInationDTO findByIdPageList(Integer Id, Integer pageNum, Integer pageSize) {
-        Integer totalCount = iQuestionMapper.FindByIdListcount(Id);
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.createCriteria().andCreatorEqualTo(Id);
+        Integer totalCount = (int)questionMapper.countByExample(questionExample);
         Integer totalPage;
         if (totalCount % pageSize == 0) {
             totalPage = totalCount / pageSize;
@@ -70,29 +105,63 @@ public class QuestionService {
             pageNum = 1;
         }
         Integer offSet = pageSize * (pageNum - 1);
-        List<Question> questionList = iQuestionMapper.questionFindByIdpageList(Id, offSet, pageSize);
+        questionExample.setOrderByClause("GMT_MODIFIED desc");
+        List<Question> questionList = questionMapper.selectByExampleWithRowbounds(questionExample,new RowBounds(offSet,pageSize));
+//        List<Question> questionList = iQuestionMapper.questionFindByIdpageList(Id, offSet, pageSize);
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         pagInationDTO pagInationDTO = new pagInationDTO();
         for (Question question : questionList) {
-            User user = iUserMapper.findById(question.getCreator());
+            UserExample userExample=new UserExample();
+            userExample.createCriteria().andAccountIdEqualTo(String.valueOf(question.getCreator()));
+            List<User> users = userMapper.selectByExample(userExample);
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question, questionDTO);
-            questionDTO.setUser(user);
+            questionDTO.setUser(users.get(0));
             questionDTOList.add(questionDTO);
         }
-        pagInationDTO.setQuestion(questionDTOList);
-        pagInationDTO.setPagInation(totalCount, pageNum, pageSize);
+        pagInationDTO.setData(questionDTOList);
+        pagInationDTO.setPagInation(totalPage, pageNum);
         return pagInationDTO;
 
     }
 
     public QuestionDTO findQuestionDetailById(Integer id){
-        Question question  = iQuestionMapper.findQuestionDetailById(id);
-        User user = iUserMapper.findById(question.getCreator());
+        Question question  = questionMapper.selectByPrimaryKey(id);
+        if (question==null){
+            throw  new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
+        UserExample userExample=new UserExample();
+        userExample.createCriteria().andAccountIdEqualTo(String.valueOf(question.getCreator()));
+        List<User> users = userMapper.selectByExample(userExample);
         QuestionDTO questionDTO = new QuestionDTO();
-        questionDTO.setUser(user);
+        questionDTO.setUser(users.get(0));
         BeanUtils.copyProperties(question, questionDTO);
         return  questionDTO ;
     };
 
+    public void IncView(Integer id){
+        Question question = new Question();
+        question.setId(id);
+        question.setViewCount(1);
+        questionExtMapper.IncView(question);
+    }
+
+    public List<QuestionDTO> selectRelated(QuestionDTO questionDTO) {
+        if (questionDTO.getTag()==null){
+            return new ArrayList<>();
+        }
+        String tag = StringUtils.replace(questionDTO.getTag(), "，", ",").replace(",", "|");
+
+        Question question=new Question();
+        question.setId(questionDTO.getId());
+        question.setTag(tag);
+        List<Question> questions=questionExtMapper.selectRelated(question);
+        //转换DTO
+        List<QuestionDTO> questionDTOS = questions.stream().map(q -> {
+            QuestionDTO questiond = new QuestionDTO();
+            BeanUtils.copyProperties(q, questiond);
+            return questiond;
+        }).collect(Collectors.toList());
+        return questionDTOS;
+    }
 }

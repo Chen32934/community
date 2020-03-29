@@ -7,19 +7,15 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
+
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
     @Autowired
     private sessionInterceptor sessionInterceptor;
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        /**
-         *
-         */
-
         registry.addInterceptor(sessionInterceptor)
-                .addPathPatterns("/**");
+                .addPathPatterns("/**").excludePathPatterns("/statics/**","/","/fonts/**","/css/**","/js/**","/images/**","/media/**","/vendors/**");
     }
 }

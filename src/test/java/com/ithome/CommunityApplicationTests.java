@@ -1,11 +1,13 @@
 package com.ithome;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
-@SpringBootTest
+
 class CommunityApplicationTests {
 
     @Test
@@ -16,9 +18,10 @@ class CommunityApplicationTests {
     @Test
     void testr() {
 
-        String a="2.3";
-        BigDecimal D=new BigDecimal(a);
-        System.out.println(D);
+        String a="2.3,5,8，9";
+        String tag = StringUtils.replace(a, "，", ",").replace(",", "|");
+
+        System.out.println(tag);
     }
 
 }

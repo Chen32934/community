@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8"/>
+    <title>Simple example - Editor.md examples</title>
+    <style>
+
+    </style>
+    <link rel="stylesheet" href="/css/editormd.css">
+    <link rel="stylesheet" href="/css/community.css">
+
+</head>
+<body>
+<div style="height: 5000px"></div>
+<div id="test-editormd"><textarea>
+</textarea>
+</div>
+<div style="height: 5000px"></div>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/editormd.min.js"></script>
+<script src="/plugins/image-dialog/image-dialog.js"></script>
+
+<script type="text/javascript">
+    var testEditor;
+
+    $(function () {
+        testEditor = editormd("test-editormd", {
+            width: "90%",
+            height: 640,
+            syncScrolling: "single",
+            path: "/edit/lib/",
+            delay: 0,
+            watch: false,
+            placeholder: "请输入问题描述",
+            imageUpload:true,
+            imageFormats:["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+            imageUploadURL:"/file/upload/"
+        });
+
+    });
+</script>
+
+
+
+
+
+</body>
+</html>

@@ -1,9 +1,13 @@
 package com.ithome.controller;
 
+import com.ithome.cach.TagCache;
 import com.ithome.domain.Question;
+import com.ithome.domain.QuestionExample;
 import com.ithome.domain.User;
-import com.ithome.mapper.IQuestionMapper;
-import com.ithome.mapper.IUserMapper;
+import com.ithome.exception.CustomizeErrorCode;
+import com.ithome.exception.CustomizeException;
+import com.ithome.mapper.QuestionMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,13 +21,12 @@ import javax.servlet.http.HttpServletRequest;
 public class publichController {
 
     @Autowired
-    private IQuestionMapper iQuesstionMapper;
-
-
+    private QuestionMapper questionMapper;
 
 
     @GetMapping("/publish")
-    public String publish() {
+    public String publish(Model model) {
+        model.addAttribute("tags", TagCache.get());
         return "publish";
     }
 
@@ -41,6 +44,10 @@ public class publichController {
         model.addAttribute("tag", tag);
         User user= (User) request.getSession().getAttribute("userSession");
         long currentTimeMillis = System.currentTimeMillis();
+        if (user == null) {
+            model.addAttribute("error", "请登录在发布");
+            return "publish";
+        }
         if (title == null || title=="" ) {
             model.addAttribute("error", "title不能为空");
             return "publish";
@@ -50,13 +57,17 @@ public class publichController {
             return "publish";
         }
         if (tag == null || tag=="") {
-            model.addAttribute("error", "tag不能为空");
+//            model.addAttribute("error", "tag不能为空");
+//            return "publish";
+            throw  new CustomizeException(CustomizeErrorCode.TAG_NOT_NULL);
+        }
+        //非法标签
+        String s = TagCache.filterInvalid(tag);
+        if (StringUtils.isNotBlank(s)){
+            model.addAttribute("error", "标签非法："+s);
             return "publish";
         }
-        if (user == null) {
-            model.addAttribute("error", "请登录在发布");
-            return "publish";
-        }
+
 
         Question question = new Question();
         question.setTitle(title);
@@ -66,25 +77,32 @@ public class publichController {
         question.setGmtCreate(System.currentTimeMillis());
         question.setGmtModified(System.currentTimeMillis());
         if (id==null){
-            iQuesstionMapper.create(question);
+            question.setViewCount(0);
+            question.setCommentCount(0);
+            question.setLikeCount(0);
+            questionMapper.insert(question);
         }else {
-            question.setId(id);
-            iQuesstionMapper.updateQuestion(question);
+            QuestionExample questionExample = new QuestionExample();
+            questionExample.createCriteria().andIdEqualTo(id);
+            int i = questionMapper.updateByExampleSelective(question, questionExample);
+            if (i!=1){
+                throw  new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
             return "redirect:/profile/questions";
         }
 
         return "redirect:/";
     }
 
-
-
     @GetMapping("/publish/{id}")
     public String publishEdit(@PathVariable(name = "id") Integer id,Model model) {
-        Question detail = iQuesstionMapper.findQuestionDetailById(id);
+        Question detail = questionMapper.selectByPrimaryKey(id);
+//        Question detail = iQuesstionMapper.findQuestionDetailById(id);
         model.addAttribute("title", detail.getTitle());
         model.addAttribute("description", detail.getDescription());
         model.addAttribute("tag", detail.getTag());
         model.addAttribute("id",detail.getId());
+        model.addAttribute("tags",TagCache.get());
         return "publish";
     }
 
