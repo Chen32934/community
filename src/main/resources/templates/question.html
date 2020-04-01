@@ -225,7 +225,7 @@
     <div class="row">
         <div class="col-lg-9  col-md-12  col-sm-12  col-xs-12">
             <!--   正文-->
-            <h3 style="font-family:bold;"><span th:text="${question.title}"></span></h3>
+            <h3 style="font-family:bold; color: black"><span th:text="${question.title}"></span></h3>
             <em class="text-color-999">
                 作者 <a class="aw-user-name" href=" " data-id="" th:text="${question.user.getName()}"> </a>
                 | 发布于<span style="color: #337ab7" th:text="${#dates.format(question.gmtCreate)}"></span>
@@ -339,10 +339,10 @@
 
                 <div class="media-left">
                     <img class="media-object img-rounded"
-                         th:src="${session.userSession.getAvatarUrl()}"></a>
+                         th:src="${question.user.avatarUrl}"></a>
                 </div>
                 <div class="media-body"><p style="margin-top: 8px; font-size: 12px"
-                                           th:text="${session.userSession.getName()}"></p>
+                                           th:text="${question.user.name}"></p>
                 </div>
             </div>
             <hr class="col-lg-12  col-md-12  col-sm-12  col-xs-12 selectRelated_hr">
@@ -358,13 +358,18 @@
                     </ul>
                 </div>
             </div>
-
-
         </div>
-
     </div>
 
 
+    <div style="margin-top: 90px" class="aw-mod aw-article-replay-box" th:if="${session.userSession==null}">
+        <a name="answer_form"></a>
+        <p align="center">要回复文章请先<a href="https://elasticsearch.cn/account/login/">登录</a>或<a href="https://elasticsearch.cn/account/register/">注册</a></p>
+    </div>
+
+</div>
+<div style="text-align: center; margin-top:10px; font-size: 12px" ass="col-lg-9  col-md-12  col-sm-12  col-xs-12">
+    <div th:insert="~{foot.html :: foot}"></div>
 </div>
 </div>
 

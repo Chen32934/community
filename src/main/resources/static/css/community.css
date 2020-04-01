@@ -1,6 +1,9 @@
 body {
+    width: 85%;
     background-color: #eeeeee;
-    margin: 10px 50px 00px 50px;
+    margin-left: auto;
+    margin-right: auto;
+    background-image: url("/img/beijing.png");
 }
 
 .main {
@@ -145,4 +148,21 @@ body {
 
 .selectRelated_a:hover {
     color: RGB(77, 160, 243);
+}
+
+.tag_hover{
+    margin-right: 6px;
+}
+.tag_hover:hover{
+    border: #2C7EEA 2px solid;
+}
+.logo{
+    cursor:pointer;
+}
+/*index*/
+.index_content{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
 }

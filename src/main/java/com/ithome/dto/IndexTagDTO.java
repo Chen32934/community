@@ -8,7 +8,7 @@ import java.util.List;
  * 模拟标签数据库
  */
 @Data
-public class TagDTO {
+public class IndexTagDTO {
     private  String categoryName;
-    private List<String> tags;
+    private List<pagInationDTO> pagInationDTO;
 }

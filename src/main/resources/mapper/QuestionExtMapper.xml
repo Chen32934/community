@@ -40,6 +40,9 @@
         <if test="search != null">
          and TITLE regexp #{search}
         </if>
+         <if test="questiontype == 'not_reply' ">
+             and  COMMENT_COUNT=0
+         </if>
      </where>
   </select>
 
@@ -49,11 +52,17 @@
             <if test="search != null">
                 and title regexp #{search}
             </if>
+            <if test="questiontype == 'not_reply' ">
+            and  COMMENT_COUNT=0
+        </if>
         </where>
         order by gmt_create desc limit #{pageNum},#{pageSize}
     </select>
 
-
-
+    <select id="selectTop" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select  *  from QUESTION
+            where   604800000>#{systemdate}-GMT_CREATE
+         order by COMMENT_COUNT desc limit 0,10
+    </select>
 
 </mapper>

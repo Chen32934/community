@@ -104,9 +104,9 @@
 
         <div class="col-lg-3  col-md-12  col-sm-12  col-xs-12">
             <div class="list-group">
-                <a href="#"
+                <a  href="/profile/questions"
                    th:class="${section == 'questions'}? ' list-group-item  active' : ' list-group-item ' ">我的问题</a>
-                <a href="#" th:class="${section == 'replies'}? 'list-group-item  active' : ' list-group-item ' "><span
+                <a href="/profile/replies" th:class="${section == 'replies'}? 'list-group-item  active' : ' list-group-item ' "><span
                         class="badge" th:text="${session.unreadSession}"></span>最新回复</a>
             </div>
         </div>

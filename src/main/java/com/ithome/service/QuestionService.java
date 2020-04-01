@@ -43,16 +43,14 @@ public class QuestionService {
 
 
 
-    public pagInationDTO list(String search,Integer pageNum, Integer pageSize) {
-
+    public pagInationDTO list(Integer pageSize,Integer pageNum,String questiontype, String search) {
         if (StringUtils.isNotBlank(search)){
             String [] tags=StringUtils.split(search," ");
             search= Arrays.stream(tags).collect(Collectors.joining("|"));
-//            search = StringUtils.replace(search, " ", "|");
-//            System.out.println(search);
         }
-        QuestionQueryDTO questionQueryDTO = new QuestionQueryDTO();
+        QuestionQueryDTO questionQueryDTO=new QuestionQueryDTO();
         questionQueryDTO.setSearch(search);
+        questionQueryDTO.setQuestiontype(questiontype);
         Integer totalCount =questionExtMapper.searchCount(questionQueryDTO);
         Integer totalPage;
         if (totalCount % pageSize == 0) {
@@ -67,9 +65,6 @@ public class QuestionService {
 
         }
         Integer offSet = pageSize * (pageNum - 1);
-//        QuestionExample questionExample = new QuestionExample();
-//        questionExample.setOrderByClause("GMT_CREATE desc");
-//        List<Question> questions = questionMapper.selectByExampleWithRowbounds(questionExample,new RowBounds(offSet,pageSize));
         questionQueryDTO.setPageNum(offSet);
         questionQueryDTO.setPageSize(pageSize);
         List<Question> questions = questionExtMapper.selectBySearch(questionQueryDTO);
@@ -89,6 +84,11 @@ public class QuestionService {
         return pagInationDTO;
     }
 
+    public List<Question> listTop(){
+        long ldate = System.currentTimeMillis();
+        List<Question> listTop=questionExtMapper.selectTop(ldate);
+        return listTop;
+    }
     public pagInationDTO findByIdPageList(Integer Id, Integer pageNum, Integer pageSize) {
         QuestionExample questionExample = new QuestionExample();
         questionExample.createCriteria().andCreatorEqualTo(Id);

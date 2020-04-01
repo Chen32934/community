@@ -19,5 +19,9 @@ public interface QuestionExtMapper {
 
    Integer searchCount(QuestionQueryDTO questionQueryDTO);
 
+
     List<Question> selectBySearch(QuestionQueryDTO questionQueryDTO);
+    List<Question> selectTop(Long systemdate);
+
+
 }

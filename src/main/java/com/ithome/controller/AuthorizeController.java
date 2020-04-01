@@ -7,6 +7,7 @@ import com.ithome.dto.GithuUser;
 import com.ithome.mapper.IUserMapper;
 import com.ithome.mapper.UserMapper;
 import com.ithome.provider.GithubProider;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.server.Session;
@@ -21,13 +22,11 @@ import java.util.List;
 
 
 @Controller
+@Slf4j  //追加日志
 public class AuthorizeController {
 
     @Autowired
     private GithubProider githubProider;
-
-    @Autowired
-    private IUserMapper iUserMapper;
 
     @Autowired
     private UserMapper userMapper;
@@ -71,7 +70,6 @@ public class AuthorizeController {
             UserExample userExample = new UserExample();
             userExample.createCriteria().andAccountIdEqualTo(String.valueOf(user.getAccountId()));
             List<User> users = userMapper.selectByExample(userExample);
-//            User DBuser=iUserMapper.findById(user.getAccountId());
             if (users.size()!=0){
                 User DBuser=new User();
                 DBuser.setName(githuUser.getName());
@@ -88,16 +86,17 @@ public class AuthorizeController {
             rep.addCookie(new Cookie("token",token));
             return "redirect:/";
         }else {
+            log.error("callback get github error,{}",githuUser);
             return "redirect:/";
         }
-//githubProider.getAccessToken(new accessTokenDTO() );
+//
     }
 
 
     @GetMapping("/logout")
    public String logout(HttpServletRequest request,HttpServletResponse response){
 
-         request.getSession().removeAttribute("userSeesion");
+        request.getSession().removeAttribute("userSeesion");
         Cookie cookie = new Cookie("token",null);
         cookie.setMaxAge(-1);
         response.addCookie(cookie);

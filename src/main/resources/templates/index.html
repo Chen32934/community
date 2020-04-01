@@ -8,79 +8,118 @@
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/community.css">
     <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
-
     <script src="js/bootstrap.min.js"></script>
     <script src="js/npm.js"></script>
     <script src="js/include.js"></script>
+    <script type="text/javascript">
+    </script>
 <body>
-
-<div th:insert="~{navigation.html :: nav}"></div>
+    <div th:insert="~{navigation.html :: nav}"></div>
 
 <div class="container-fluid main">
     <div class="row">
         <div class="col-lg-9  col-md-12  col-sm-12  col-xs-12">
             <h2><span class="glyphicon glyphicon-th-list"></span>&nbsp&nbsp发现</h2>
-            <hr>
-
-            <div class="media" th:each="question : ${questionlist.data}">
-                <div class="media-left">
-                    <a href="#">
-                        <img class="media-object img-rounded" th:src="${question.user.avatarUrl}" alt="头像">
-                    </a>
-                </div>
-                <div class="media-body">
-                    <a th:href="@{'/question/'+${question.id}}"><h4  class="media-heading" th:text="${question.title}"></h4></a>
-                    <span th:text="${question.description}"></span><br>
-                    <span class="text-color-999">&nbsp;•&nbsp;<span th:text="${question.commentCount}"></span> 个回复 &nbsp;•&nbsp;<span
-                            th:text="${question.viewCount}"></span> 次浏览&nbsp; •&nbsp;<span
-                            th:text="${#dates.format(question.gmtCreate,  'yyyy-MM-dd HH:mm')}"></span></span>
-                </div>
-            </div>
-            <!--            分页-->
-            <nav aria-label="Page navigation">
-                <ul class="pagination">
-                    <li th:if="${questionlist.showHomePage}">
-                        <a th:href="@{/(pageNum=1,search=${search})}" aria-label="Previous">
-                            <span aria-hidden="true">&lt;&lt;</span>
-                        </a>
+            <div style="height: 50px;">
+                <ul id="myTab" class="nav nav-tabs" style="float:right">
+                    <li id="new" th:class="${questiontype == null ? 'active' : ''}">
+                        <a href="/">最新</a>
                     </li>
-                    <li th:if="${questionlist.showLastPage}">
-                        <a th:href="@{/(pageNum=${questionlist.pageNum}-1,search=${search})}" aria-label="Previous">
-                            <span aria-hidden="true">&lt;</span>
-                        </a>
-                    </li>
-                    <li th:class="${questionlist.pageNum == pageNum}? 'active' : ' ' "
-                        th:each="pageNum : ${questionlist.pages}"><a th:href="@{/(pageNum=${pageNum},search=${search})}"
-                                                                     th:text="${pageNum}"></a></li>
-
-                    <li th:if="${questionlist.showNext}">
-                        <a th:href="@{/(pageNum=${questionlist.pageNum}+1,search=${search})}" aria-label="Previous">
-                            <span aria-hidden="true">&gt;</span>
-                        </a>
-                    </li>
-
-                    <li th:if="${questionlist.showEndPage}">
-                        <a th:href="@{/(pageNum=${questionlist.totalPage},search=${search})}" aria-label="Previous">
-                            <span aria-hidden="true">&gt;&gt;</span>
-                        </a>
+                    <li th:class="${questiontype == 'not_reply' ? 'active' : ''}">
+                        <a style="color: red" th:href="@{/(questiontype='not_reply')}">消灭零回复</a>
                     </li>
                 </ul>
-            </nav>
+            </div>
+            <div>
+                <div id="myTabContent" class="tab-content">
+                    <div class="tab-pane fade in active" id="home">
+                        <div class="media" th:each="question : ${questionlist.data}">
+                            <div class="media-left">
+                                <a href="#">
+                                    <img class="media-object img-rounded" th:src="${question.user.avatarUrl}" alt="头像">
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <a th:href="@{'/question/'+${question.id}}"><h4 class="media-heading"
+                                                                                th:text="${question.title}"></h4></a>
+                                <span class="index_content" th:text="${question.description}"></span>
+                                <span class="text-color-999">&nbsp;•&nbsp;<span
+                                        th:text="${question.commentCount}"></span> 个回复 &nbsp;•&nbsp;<span
+                                        th:text="${question.viewCount}"></span> 次浏览&nbsp; •&nbsp;<span
+                                        th:text="${#dates.format(question.gmtCreate,  'yyyy-MM-dd HH:mm')}"></span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--            分页-->
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            <li th:if="${questionlist.showHomePage}">
+                                <a th:href="@{/(pageNum=1,search=${search},questiontype=${questiontype})}"
+                                   aria-label="Previous">
+                                    <span aria-hidden="true">&lt;&lt;</span>
+                                </a>
+                            </li>
+                            <li th:if="${questionlist.showLastPage}">
+                                <a th:href="@{/(pageNum=${questionlist.pageNum}-1,search=${search},commentCount=${commentCount})}"
+                                   aria-label="Previous">
+                                    <span aria-hidden="true">&lt;</span>
+                                </a>
+                            </li>
+                            <li th:class="${questionlist.pageNum == pageNum}? 'active' : ' ' "
+                                th:each="pageNum : ${questionlist.pages}"><a
+                                    th:href="@{/(pageNum=${pageNum},search=${search},commentCount=${commentCount})}"
+                                    th:text="${pageNum}"></a></li>
 
+                            <li th:if="${questionlist.showNext}">
+                                <a th:href="@{/(pageNum=${questionlist.pageNum}+1,search=${search},questiontype=${questiontype})}"
+                                   aria-label="Previous">
+                                    <span aria-hidden="true">&gt;</span>
+                                </a>
+                            </li>
 
+                            <li th:if="${questionlist.showEndPage}">
+                                <a th:href="@{/(pageNum=${questionlist.totalPage},search=${search},commentCount=${commentCount})}"
+                                   aria-label="Previous">
+                                    <span aria-hidden="true">&gt;&gt;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                </div>
+            </div>
+            <hr>
         </div>
 
 
         <div class="col-lg-3  col-md-12  col-sm-12  col-xs-12">
-            <h3>热门话题</h3>
-            问题标题:请用精简的语言描述您发布的问题，不超过25字
-            问题补充:详细补充您的问题内容，并确保问题描述清晰直观，并提供一些相关的资料:
-            选择标签:选择一个或者多个合适的标签，用逗号隔开，每个标签不超过10个字
-        </div>
+            <div class="col-lg-12  col-md-12  col-sm-12  col-xs-12">
+                <h3>精彩分享</h3>
+              <img src="/img/tainanle.gif" height="193" width="290"/>
+            </div>
+            <div class="col-lg-12  col-md-12  col-sm-12  col-xs-12">
+                <h3>热门话题TOP10(7天内)</h3>
 
+                <div class="mod-body font-size-12">
+                    <ul class="selectRelated">
+                        <li th:each="real : ${questionTop}">
+                            <a class="selectRelated_a" th:href="@{ '/question/'+ ${real.id}}"
+                               th:text="${real.title}"></a></li>
+                    </ul>
+                </div>
 
-    </div>
+            </div>
+            <div class="col-lg-12  col-md-12  col-sm-12  col-xs-12">
+                <h3>学习交流</h3>
+                <p>在我的下边有个小企鹅，，，，，欢迎大佬骚扰</p>
+            </div>
+      </div>
 </div>
 
+<div style="text-align: center; margin-top:3px; font-size: 12px" class="col-lg-9  col-md-12  col-sm-12  col-xs-12">
+    <div th:insert="~{foot.html :: foot}"></div>
+</div>
+</div>
 </body>
+
 </html>

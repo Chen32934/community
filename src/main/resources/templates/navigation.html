@@ -2,24 +2,20 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
 
-<body>
+<body >
 
-<div th:fragment="nav">
-
+<div th:fragment="nav" >
     <nav class="navbar navbar-default">
         <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only" href="/">键盘社区</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="/">键盘社区</a>
-            </div>
 
+                <span><img class="logo" onclick="shouye()"  src="/img/logo2.png" height="50" width="50"/></span>
+            </div>
+            <script type="text/javascript">
+                function shouye() {
+                    window.location.href="/"
+                }
+            </script>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <form class="navbar-form navbar-left" action="/">
                     <div class="form-group">
@@ -28,7 +24,7 @@
                     <button type="submit" class="btn btn-default">GO</button>
                 </form>
                 <ul class="nav navbar-nav navbar-right">
-                    <li th:if="${session.userSession} !=null"><a href="/profile/replies">通知&nbsp;<span class="badge" th:text="${session.unreadSession}">4</span></a></li>
+                    <li th:if="${session.userSession} !=null"><a href="/profile/replies">通知&nbsp;<span class="badge" th:text="${session.unreadSession}"></span></a></li>
                     <li th:if="${session.userSession} !=null"><a href="/publish">提问问题</a></li>
                     <!--   if user!=null         -->
                     <li class="dropdown" th:if="${session.userSession} !=null">
@@ -52,8 +48,6 @@
 
         </div>
     </nav>
-
-
 </div>
 
 </body>

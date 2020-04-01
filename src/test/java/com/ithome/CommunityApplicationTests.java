@@ -18,10 +18,9 @@ class CommunityApplicationTests {
     @Test
     void testr() {
 
-        String a="2.3,5,8，9";
-        String tag = StringUtils.replace(a, "，", ",").replace(",", "|");
 
-        System.out.println(tag);
+
+
     }
 
 }

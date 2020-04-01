@@ -49,7 +49,7 @@ public class commentController {
         comment.setCommentator(user.getAccountId());
         comment.setLikeCount(0);
         comment.setCommentCount(0);
-        commentService.Insert(comment,user);
+          commentService.Insert(comment,user);
         return ResultDTO.okOf();
     }
 

@@ -3,7 +3,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>daweiCommunity</title>
+    <title>发布问题</title>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/css/community.css">
@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="/css/community.css">
     <script src="/js/jquery.min.js"></script>
     <script src="/js/editormd.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/npm.js"></script>
     <script src="/js/include.js"></script>
@@ -46,7 +45,7 @@
                 watch: false,
                 placeholder: "请输入问题描述",
                 imageUpload:true,
-                imageFormats:["jpg","jpeg","gif","png","bmp","webap"],
+                imageFormats:["jpg","jpeg","gif","png"],
                 imageUploadURL:"/file/upload/"
             });
 
@@ -78,13 +77,12 @@
                         <textarea name="description" id="description" th:text="${description}"></textarea>
                     </div>
                 </div>
-
-
                 <div class="form-group">
                     <label for="title">添加标签:</label>
                     <input type="text" class="form-control" id="tag" name="tag" th:value="${tag}"
                            placeholder="输入标签,以, 号分隔" autocomplete="off" onclick="showselect()">
-                    <div id="selectTag" style="display: none">
+
+                    <div id="selectTag" style="display: none;">
                         <div id="select-tag" class="publish-tag-tab">
                             <ul class="nav nav-tabs" role="tablist">
                                 <li role="presentation" th:each="selectCategory,selectCategoryStat: ${tags}"
@@ -93,32 +91,29 @@
                                        data-toggle="tab" th:text="${selectCategory.categoryName}"></a>
                                 </li>
                             </ul>
-
                             <div class="tab-content">
                                 <div role="tabpanel" class="tab-pane" th:id="${selectCategory.categoryName}"
                                      th:each="selectCategory:${tags}"
                                      th:class="${selectCategoryStat.first ? 'active tab-pane' : 'tab-pane'}">
-                               <span style="margin-right: 5px" class="label label-info"
-                                     th:each="selectTag:${selectCategory.tags}">
-                                         <span class="glyphicon glyphicon-tags"></span>
-                                        &nbsp;&nbsp;<span th:data-tag="${selectTag}" th:text="${selectTag}"
-                                                          onclick="select(this)"></span></span>
+                               <div class="label label-info tag_hover" th:each="selectTag:${selectCategory.tags}">
+                                         <span style="height: 18px" class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;<span style="font-size: 14px " th:data-tag="${selectTag}" th:text="${selectTag}" onclick="select(this)"></span>
+                               </div>
                                 </div>
                             </div>
+
                         </div>
-
                     </div>
-
-
                 </div>
-                <span class="alert alert-danger" th:if="${error!=null}" th:text="${error}" role="alert"></span>
+
                 <input type="hidden" style="font-size: 50px" name="id" id="qid" th:value="${id}">
+                <br>
+                <div class="col-lg-12  col-md-12  col-sm-12  col-xs-12">
                 <button type="submit" class="btn btn-success btn-publish">发布</button>
+                <span class="alert alert-danger" th:if="${error!=null}" th:text="${error}" role="alert">
+                </span>
+                </div>
             </form>
-
-
         </div>
-
         <div class="col-lg-3  col-md-12  col-sm-12  col-xs-12">
             <h3>问题发起指南</h3>
             问题标题:请用精简的语言描述您发布的问题，不超过25字
@@ -126,8 +121,13 @@
             选择标签:选择一个或者多个合适的标签，用逗号隔开，每个标签不超过10个字
         </div>
     </div>
-</div>
 
+
+
+</div>
+<div style="text-align: center; margin-top:10px; font-size: 12px" ass="col-lg-9  col-md-12  col-sm-12  col-xs-12">
+    <div th:insert="~{foot.html :: foot}"></div>
+</div>
 
 </body>
 </html>

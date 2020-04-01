@@ -44,7 +44,6 @@ public class sessionInterceptor implements HandlerInterceptor {
                     userExample.createCriteria()
                             .andTokenEqualTo(token);
                     List<User> users = userMapper.selectByExample(userExample);
-//                    User user = iUserMapper.findByToken(token);
                     if (users.size()!=0) {
                         request.getSession().setAttribute("userSession", users.get(0));
                         Integer unreadCount = notifyService.unreadCount(users.get(0).getAccountId());
